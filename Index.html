@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lago di Garda 2026 - Urlaubs-Dashboard</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fdfbf7">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fdfbf7;
+            --text-color: #111111;
+            --border-style: 3px solid #111111;
+            --shadow-style: 6px 6px 0px #111111;
+            --shadow-active: 2px 2px 0px #111111;
+            
+            --lachsrot: #ff7676;
+            --signalrot: #ef4444;
+            --orange: #f78c44;
+            --gelb: #fcc434;
+            --gruen: #4caf50;
+            --blau: #348feb;
+            --lila: #a855f7;
+            --tuerkis: #14b8a6;
+            --violett: #c084fc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 40px 20px; min-height: 100vh; position: relative; overflow-x: hidden; }
+        
+        .deco-badge { position: absolute; top: 40px; left: -20px; background-color: var(--lachsrot); color: var(--text-color); padding: 10px 25px 10px 35px; font-weight: 900; font-size: 1.2rem; border: var(--border-style); box-shadow: var(--shadow-style); transform: rotate(-8deg); border-radius: 0 50px 50px 0; z-index: 1; }
+        .deco-shape { position: absolute; top: 30px; right: 40px; background-color: var(--gelb); width: 70px; height: 70px; border-radius: 50% 15% 50% 50%; border: var(--border-style); box-shadow: var(--shadow-style); transform: rotate(15deg); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; z-index: 1; }
+        
+        .container { max-width: 750px; margin: 0 auto; position: relative; z-index: 2; }
+        header { text-align: center; margin-bottom: 40px; margin-top: 50px; }
+        header h1 { font-size: 3.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: -2px; line-height: 1.1; margin-bottom: 5px; }
+        header p { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; color: #555; }
+        
+        .btn { font-family: 'Inter', sans-serif; font-weight: 900; font-size: 1rem; text-transform: uppercase; padding: 12px 24px; border: var(--border-style); box-shadow: var(--shadow-style); cursor: pointer; transition: all 0.1s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: var(--text-color); }
+        .btn:active { transform: translate(4px, 4px); box-shadow: var(--shadow-active); }
+        .btn-pill { border-radius: 50px; }
+        .btn-rect { border-radius: 8px; }
+        .btn-trigger { background-color: var(--blau); color: white; width: 100%; font-size: 1.2rem; padding: 16px; margin-bottom: 30px; }
+        .btn-save { background-color: var(--gruen); color: white; }
+        .btn-cancel { background-color: var(--lachsrot); color: white; }
+        
+        .btn-action { padding: 6px 14px; font-size: 0.85rem; box-shadow: 3px 3px 0px #111111; }
+        .btn-action:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #111111; }
+        .btn-edit { background-color: var(--lila); color: white; }
+        .btn-delete { background-color: var(--signalrot); color: white; }
+        .btn-route { background-color: var(--tuerkis); color: white; font-size: 0.9rem; margin-top: 10px; width: fit-content; }
+        .btn-share-all { background-color: var(--violett); color: var(--text-color); width: 100%; font-size: 1.2rem; padding: 18px; margin-top: 50px; border-radius: 12px; }
+
+        .form-container { background-color: #ffffff; border: var(--border-style); box-shadow: 8px 8px 0px #111111; border-radius: 16px; padding: 25px; margin-bottom: 35px; display: none; }
+        .form-container.open { display: block; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .form-group { margin-bottom: 18px; }
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+        label { display: block; font-weight: 900; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 6px; letter-spacing: 0.5px; }
+        
+        .input-field { width: 100%; padding: 12px; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700; border: var(--border-style); border-radius: 8px; background-color: var(--bg-color); color: var(--text-color); box-shadow: 3px 3px 0px #111111; }
+        .input-field:focus { outline: none; background-color: #ffffff; box-shadow: 4px 4px 0px var(--blau); }
+        textarea.input-field { resize: vertical; min-height: 90px; }
+        .form-buttons { display: flex; gap: 15px; margin-top: 10px; }
+
+        .todo-list { display: flex; flex-direction: column; gap: 20px; }
+        .todo-card { background-color: #ffffff; border: var(--border-style); box-shadow: var(--shadow-style); border-radius: 16px; padding: 20px; display: flex; align-items: flex-start; gap: 15px; transition: all 0.2s ease; }
+        .todo-card.completed { background-color: #f1ede4; opacity: 0.75; }
+        .todo-card.completed .card-title { text-decoration: line-through; color: #666; }
+
+        .checkbox-wrapper { padding-top: 4px; }
+        .custom-checkbox { appearance: none; width: 26px; height: 26px; border: var(--border-style); border-radius: 6px; background-color: #ffffff; box-shadow: 3px 3px 0px #111111; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
+        .custom-checkbox:checked { background-color: var(--gruen); }
+        .custom-checkbox:checked::after { content: "V"; color: white; font-weight: 900; font-size: 1.1rem; }
+        .custom-checkbox:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #111111; }
+
+        .card-main { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        .card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; }
+        .card-title { font-size: 1.3rem; font-weight: 900; line-height: 1.2; word-wrap: break-word; }
+        .card-actions-flex { display: flex; gap: 8px; flex-shrink: 0; }
+        .badge-row { display: flex; flex-wrap: wrap; gap: 6px; }
+        .badge { font-size: 0.75rem; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border: 2px solid #111111; border-radius: 50px; }
+        
+        .badge-cat-Ausflug { background-color: var(--gelb); }
+        .badge-cat-Essen { background-color: var(--orange); }
+        .badge-cat-Strand { background-color: var(--blau); color: white; }
+        .badge-date { background-color: var(--text-color); color: white; }
+        .badge-weather { background-color: #e5e7eb; color: var(--text-color); }
+        .badge-time { background-color: white; border: 2px dashed var(--text-color); color: var(--text-color); }
+
+        .card-notes { font-size: 0.95rem; line-height: 1.4; color: #333; white-space: pre-wrap; margin-top: 4px; }
+        .card-web-link { font-size: 0.9rem; font-weight: 700; color: var(--blau); text-decoration: underline; word-break: break-all; margin-top: 4px; }
+
+        @media (max-width: 600px) {
+            body { padding: 20px 10px; }
+            header h1 { font-size: 2.3rem; }
+            .form-row { flex-direction: column; gap: 0; }
+            .card-header-flex { flex-direction: column; gap: 10px; }
+            .card-actions-flex { width: 100%; justify-content: flex-start; }
+            .deco-badge { display: none; }
+            .deco-shape { width: 50px; height: 50px; font-size: 1rem; right: 15px; top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="deco-badge">Garda 2026</div>
+    <div class="deco-shape">26</div>
+
+    <div class="container">
+        <header>
+            <h1>Lago di Garda 2026</h1>
+            <p>Urlaubs-Dashboard & Planer</p>
+        </header>
+
+        <button class="btn btn-pill btn-trigger" id="toggleFormBtn" onclick="toggleForm()">+ Neuer Eintrag</button>
+
+        <div class="form-container" id="formContainer">
+            <input type="hidden" id="entryIndex" value="">
+            
+            <div class="form-group">
+                <label for="fName">Name / Ort *</label>
+                <input type="text" id="fName" class="input-field" placeholder="z.B. Aussichtspunkt, Restaurant...">
+            </div>
+
+            <div class="form-group">
+                <label for="fNotes">Notizen & Details</label>
+                <textarea id="fNotes" class="input-field" placeholder="Oeffnungszeiten, Tipps, Infos..."></textarea>
+            </div>
+
+            <div class="form-row" style="flex-wrap: wrap;">
+                <div class="form-group" style="min-width: 180px;">
+                    <label for="fDate">Datum</label>
+                    <input type="date" id="fDate" class="input-field">
+                </div>
+                <div class="form-group" style="min-width: 180px;">
+                    <label for="fCategory">Kategorie</label>
+                    <select id="fCategory" class="input-field">
+                        <option value="Ausflug">Ausflug</option>
+                        <option value="Essen">Essen</option>
+                        <option value="Strand">Strand</option>
+                    </select>
+                </div>
+                <div class="form-group" style="min-width: 180px;">
+                    <label for="fTime">Fahrzeit (geschaetzt)</label>
+                    <input type="text" id="fTime" class="input-field" placeholder="z.B. ca. 45 Min.">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fWeather">Wetter-Bedingung</label>
+                    <select id="fWeather" class="input-field">
+                        <option value="Egal">Egal</option>
+                        <option value="Sonne">Sonne</option>
+                        <option value="Hauptsache kein Regen">Hauptsache kein Regen</option>
+                        <option value="Schlechtwetter">Schlechtwetter</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fWeb">Webseite (URL)</label>
+                    <input type="url" id="fWeb" class="input-field" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label for="fMap">Google Maps Ziel</label>
+                    <input type="text" id="fMap" class="input-field" placeholder="Zieladresse fuer Routenplaner">
+                </div>
+            </div>
+
+            <div class="form-buttons">
+                <button type="button" class="btn btn-rect btn-save" onclick="saveEntry()">Speichern</button>
+                <button type="button" class="btn btn-rect btn-cancel" onclick="toggleForm()">Abbrechen</button>
+            </div>
+        </div>
+
+        <div class="todo-list" id="todoListContainer">
+            </div>
+
+        <button class="btn btn-share-all" onclick="shareDashboard()">
+            Dashboard teilen / exportieren
+        </button>
+    </div>
+
+    <script>
+        const initialEntries = [
+            { name: "Antiquitaetenmarkt Desenzano", date: "2026-07-05", notes: "8-13 Uhr. Gleichzeitig findet zeitgleich auch der Markt in Salo statt.", weather: "Egal", web: "", map: "Desenzano del Garda", category: "Ausflug", time: "ca. 30 Min.", completed: false },
+            { name: "Lunch bei Da Osvaldo", date: "", notes: "Lunch an der Promenade in Portese.", weather: "Egal", web: "", map: "Da Osvaldo, Portese", category: "Essen", time: "ca. 10 Min.", completed: false },
+            { name: "Ausflug und Eis auf die Kanincheninsel", date: "", notes: "Isola di San Biagio besuchen und leckeres Eis geniessen.", weather: "Sonne", web: "", map: "Isola di San Biagio, Manerba del Garda", category: "Ausflug", time: "ca. 15 Min.", completed: false },
+            { name: "Oelmuehle mit Restaurant besuchen? / frantoio manestrini", date: "", notes: "Frantoio Manestrini besichtigen, Olivenoel probieren und das Restaurant besuchen.", weather: "Egal", web: "https://www.manestrini.it/", map: "Frantoio Manestrini, Soiano del Lago", category: "Essen", time: "ca. 15 Min.", completed: false },
+            { name: "malen mit wein trinken Camping Fornella", date: "", notes: "Kreative Aktivitaet auf dem Camping Fornella.", weather: "Egal", web: "https://www.fornella.it/", map: "Camping Fornella", category: "Ausflug", time: "0 Min. (Hier)", completed: false },
+            { name: "Limonaia la malora in Gargnano + Limonade trinken", date: "", notes: "Historischen Zitronengarten besichtigen und frische Limonade trinken.", weather: "Sonne", web: "http://www.lamalora.it/", map: "Limonaia la Malora, Gargnano", category: "Ausflug", time: "ca. 40 Min.", completed: false },
+            { name: "Ausflug zum Santuario di Montecastello", date: "", notes: "Kirche an Klippe mit spektakulaerem Blick.", weather: "Sonne", web: "", map: "Santuario di Montecastello, Tignale", category: "Ausflug", time: "ca. 50 Min.", completed: false },
+            { name: "Bootsfahrt?", date: "", notes: "Eventuell ein Boot mieten oder eine Rundfahrt planen.", weather: "Sonne", web: "", map: "Lago di Garda", category: "Ausflug", time: "Variabel", completed: false },
+            { name: "baia del Sirene", date: "", notes: "Ostseite See / schwer erreichbar (laengere Anfahrt).", weather: "Sonne", web: "", map: "Parco Baia delle Sirene, Garda", category: "Strand", time: "ca. 60 Min.", completed: false },
+            { name: "lago d'idro", date: "", notes: "Ruhige Alternative zum Gardasee (ca. 45 min Fahrtzeit).", weather: "Egal", web: "", map: "Lago d'Idro", category: "Ausflug", time: "ca. 45 Min.", completed: false }
+        ];
+
+        let entries = [];
+
+        function initDashboard() {
+            const storedData = localStorage.getItem('garda_dashboard_entries');
+            if (storedData) {
+                entries = JSON.parse(storedData);
+            } else {
+                entries = initialEntries;
+                updateStorage();
+            }
+            renderEntries();
+        }
+
+        function updateStorage() {
+            localStorage.setItem('garda_dashboard_entries', JSON.stringify(entries));
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('formContainer');
+            const btn = document.getElementById('toggleFormBtn');
+            if (form.classList.contains('open')) {
+                form.classList.remove('open');
+                btn.innerText = "+ Neuer Eintrag";
+                clearForm();
+            } else {
+                form.classList.add('open');
+                btn.innerText = "- Formular ausblenden";
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('entryIndex').value = "";
+            document.getElementById('fName').value = "";
+            document.getElementById('fNotes').value = "";
+            document.getElementById('fDate').value = "";
+            document.getElementById('fCategory').value = "Ausflug";
+            document.getElementById('fTime').value = "";
+            document.getElementById('fWeather').value = "Egal";
+            document.getElementById('fWeb').value = "";
+            document.getElementById('fMap').value = "";
+        }
+
+        function saveEntry() {
+            const name = document.getElementById('fName').value.trim();
+            if (!name) {
+                alert("Bitte gib einen Namen oder Ort ein!");
+                return;
+            }
+
+            const indexVal = document.getElementById('entryIndex').value;
+            const entryData = {
+                name: name,
+                notes: document.getElementById('fNotes').value.trim(),
+                date: document.getElementById('fDate').value,
+                category: document.getElementById('fCategory').value,
+                time: document.getElementById('fTime').value.trim(),
+                weather: document.getElementById('fWeather').value,
+                web: document.getElementById('fWeb').value.trim(),
+                map: document.getElementById('fMap').value.trim(),
+                completed: indexVal !== "" ? entries[parseInt(indexVal)].completed : false
+            };
+
+            if (indexVal !== "") {
+                entries[parseInt(indexVal)] = entryData;
+            } else {
+                entries.unshift(entryData);
+            }
+
+            updateStorage();
+            renderEntries();
+            toggleForm();
+        }
+
+        function editEntry(index) {
+            const entry = entries[index];
+            document.getElementById('entryIndex').value = index;
+            document.getElementById('fName').value = entry.name;
+            document.getElementById('fNotes').value = entry.notes;
+            document.getElementById('fDate').value = entry.date;
+            document.getElementById('fCategory').value = entry.category;
+            document.getElementById('fTime').value = entry.time || "";
+            document.getElementById('fWeather').value = entry.weather;
+            document.getElementById('fWeb').value = entry.web;
+            document.getElementById('fMap').value = entry.map;
+
+            const form = document.getElementById('formContainer');
+            const btn = document.getElementById('toggleFormBtn');
+            form.classList.add('open');
+            btn.innerText = "- Formular ausblenden";
+
+            window.scrollTo({ top: form.offsetTop - 40, behavior: 'smooth' });
+        }
+
+        function deleteEntry(index) {
+            if (confirm("Moechtest du diesen Eintrag wirklich loeschen?")) {
+                entries.splice(index, 1);
+                updateStorage();
+                renderEntries();
+            }
+        }
+
+        function toggleComplete(index) {
+            entries[index].completed = !entries[index].completed;
+            updateStorage();
+            renderEntries();
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return "";
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return "";
+            return d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function renderEntries() {
+            const container = document.getElementById('todoListContainer');
+            container.innerHTML = "";
+
+            entries.forEach((entry, index) => {
+                const card = document.createElement('div');
+                card.className = `todo-card ${entry.completed ? 'completed' : ''}`;
+
+                let badgesHtml = `<span class="badge badge-cat-${entry.category}">${entry.category}</span>`;
+                
+                if (entry.date) {
+                    badgesHtml += `<span class="badge badge-date">Datum: ${formatDate(entry.date)}</span>`;
+                }
+                
+                if (entry.time) {
+                    badgesHtml += `<span class="badge badge-time">Fahrzeit: ${entry.time}</span>`;
+                }
+
+                if (entry.weather && entry.weather !== "Egal") {
+                    badgesHtml += `<span class="badge badge-weather">Wetter: ${entry.weather}</span>`;
+                }
+
+                let webHtml = "";
+                if (entry.web) {
+                    let displayUrl = entry.web.replace(/(^\w+:|^)\/\//, '');
+                    if (displayUrl.length > 40) displayUrl = displayUrl.substring(0, 37) + "...";
+                    webHtml = `<a href="${entry.web}" target="_blank" class="card-web-link">Webseite: ${displayUrl}</a>`;
+                }
+
+                let routeHtml = "";
+                if (entry.map) {
+                    const originStr = encodeURIComponent("Camping Fornella, San Felice del Benaco, Italien");
+                    const destStr = encodeURIComponent(entry.map);
+                    const fullRouteUrl = `https://www.google.com/maps/dir/?api=1&origin=${originStr}&destination=${destStr}`;
+                    routeHtml = `<a href="${fullRouteUrl}" target="_blank" class="btn btn-rect btn-action btn-route">Route berechnen</a>`;
+                }
+
+                card.innerHTML = `
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" class="custom-checkbox" ${entry.completed ? 'checked' : ''} onclick="toggleComplete(${index})">
+                    </div>
+                    <div class="card-main">
+                        <div class="card-header-flex">
+                            <h3 class="card-title">${entry.name}</h3>
+                            <div class="card-actions-flex">
+                                <button class="btn btn-rect btn-action btn-edit" onclick="editEntry(${index})">Bearbeiten</button>
+                                <button class="btn btn-rect btn-action btn-delete" onclick="deleteEntry(${index})">Loeschen</button>
+                            </div>
+                        </div>
+                        <div class="badge-row">${badgesHtml}</div>
+                        ${entry.notes ? `<p class="card-notes">${entry.notes}</p>` : ''}
+                        ${webHtml}
+                        ${routeHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function shareDashboard() {
+            let currentHtml = document.documentElement.outerHTML;
+            const downloadBlob = new Blob([currentHtml], { type: "text/html" });
+            const downloadUrl = URL.createObjectURL(downloadBlob);
+            
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = "Lago_di_Garda_Dashboard_2026.html";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(downloadUrl);
+            
+            alert("Die HTML-Datei wurde mit deinem aktuellen Speicherstand heruntergeladen. Du kannst diese Datei jetzt teilen.");
+        }
+
+        initDashboard();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registriert.', reg))
+                    .catch(err => console.log('Service Worker Fehler:', err));
+            });
+        }
+    </script>
+</body>
+</html>
