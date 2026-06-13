@@ -7,7 +7,7 @@
   "theme_color": "#fdfbf7",
   "icons": [
     {
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Eo_circle_yellow_white_letter-g.svg/512px-Eo_circle_yellow_white_letter-g.svg.png",
+      "src": "./1781358141971.png",
       "sizes": "512x512",
       "type": "image/png"
     }
